@@ -51,13 +51,19 @@ body: StreamBuilder(
       itemBuilder: ((context, index) {
         Todo todo = Todo.fromJson(
             snapshot.data?.docs[index].data() as Map<String, dynamic>);
+        print( snapshot.data?.docs[index].data());
+        print('${todo.title} - ${todo.completed}');
+
+        todo.id = snapshot.data?.docs[index].id;
+
+
         return Dismissible(
           key: Key(todo.id.toString()),
           onDismissed: (direction) {
-            // context.read<TodoListProvider>().deleteTodo(todo.title);
+            context.read<TodoListProvider>().deleteTodo(todo.id!);
 
-            // ScaffoldMessenger.of(context).showSnackBar(
-            //     SnackBar(content: Text('${todo.title} dismissed')));
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('${todo.title} dismissed')));
           },
           background: Container(
             color: Colors.red,
@@ -89,12 +95,13 @@ body: StreamBuilder(
                 ),
                 IconButton(
                   onPressed: () {
-                    // showDialog(
-                    //   context: context,
-                    //   builder: (BuildContext context) => TodoModal(
-                    //     type: 'Delete',
-                    //   ),
-                    // );
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) => TodoModal(
+                        type: 'Delete',
+                        item: todo,
+                      ),
+                    );
                   },
                   icon: const Icon(Icons.delete_outlined),
                 )
@@ -107,7 +114,7 @@ body: StreamBuilder(
   },
 ),
 
-,
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
